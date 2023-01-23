@@ -8,13 +8,14 @@ trait Monad[Box[_]] extends Applicative[Box] {
 
   def flatMap[A, B](boxA: Box[A])(f: A => Box[B]): Box[B]
 
-  // TODO - implement using flatMap
-  def flatten[A](boxBoxA: Box[Box[A]]): Box[A] = ???
+  def flatten[A](boxBoxA: Box[Box[A]]): Box[A] = 
+    flatMap(boxBoxA)(a => a) 
+  
 
-  // TODO - implement using flatMap and map
-  override def ap[A, B](boxF: Box[A => B])(boxA: Box[A]): Box[B] = ???
+  override def ap[A, B](boxFn: Box[A => B])(boxA: Box[A]): Box[B] = 
+    flatMap(boxFn)(fn => map(boxA)(fn))
 
-  // TODO - implement using flatMap and pure
-  override def map[A, B](boxA: Box[A])(f: A => B): Box[B] = ???
+  override def map[A, B](boxA: Box[A])(fn: A => B): Box[B] = 
+    flatMap(boxA)(a => pure(fn(a)))
 
 }
